@@ -8,6 +8,7 @@ import (
 
 var db *gorm.DB
 
+// Initialize MYSQL Db
 func Init(mysqlUrl string) error {
 	var err error
 	if db, err = gorm.Open("mysql", mysqlUrl); err != nil {
@@ -21,6 +22,7 @@ func Init(mysqlUrl string) error {
 	return nil
 }
 
+// Close MYSQL Db
 func Close() {
 	err := db.Close()
 	if err != nil {
@@ -29,6 +31,7 @@ func Close() {
 	log.Info("MYSQL Close: DONE")
 }
 
+// Get MySql Db Connection
 func GetDb() *gorm.DB {
 	return db
 }
