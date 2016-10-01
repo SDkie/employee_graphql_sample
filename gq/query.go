@@ -19,5 +19,10 @@ var query = graphql.NewObject(graphql.ObjectConfig{
 			},
 			Resolve: resolvers.GetEmployee,
 		},
+		"listOfAllEmployees": &graphql.Field{
+			Type:        graphql.NewList(types.Employee),
+			Description: "Gets a list of all the employees",
+			Resolve:     resolvers.ListOfAllEmployees,
+		},
 	},
 })

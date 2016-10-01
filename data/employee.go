@@ -21,3 +21,10 @@ func GetEmployeeByEmpNo(empNo int) (*Employee, error) {
 	err := db.GetDb().Where(&Employee{EmpNo: empNo}).First(emp).Error
 	return emp, err
 }
+
+// Get List of All Employees
+func ListOfAllEmployees() ([]Employee, error) {
+	emps := new([]Employee)
+	err := db.GetDb().Find(&emps).Error
+	return *emps, err
+}

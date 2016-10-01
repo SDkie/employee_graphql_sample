@@ -18,3 +18,12 @@ func GetEmployee(params graphql.ResolveParams) (interface{}, error) {
 
 	return emp, nil
 }
+
+func ListOfAllEmployees(params graphql.ResolveParams) (interface{}, error) {
+	emps, err := data.ListOfAllEmployees()
+	if err != nil {
+		log.Error(err)
+		return nil, err
+	}
+	return emps, err
+}
