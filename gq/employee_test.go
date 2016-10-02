@@ -119,6 +119,40 @@ var _ = Describe("createEmployee Graph Query", func() {
 		})
 	})
 
+	Context("Not Sending valid DeptNo", func() {
+
+		It("User creation should fail", func() {
+			query := `
+		mutation {
+			createEmployee(ENAME:"%s", JOB:"%s", MGR:%d, SALARY:%f, DEPTNO:%d){
+				ENAME,
+				JOB,
+				MGR,
+				SALARY,
+				DEPT {
+					DEPTNO,
+					DNAME,
+					LOC
+				}
+			}
+		}`
+
+			query = fmt.Sprintf(query, emp.EName, emp.Job, emp.Mgr, emp.Salary, -1)
+			urlQuery.Set("query", query)
+			req.URL.RawQuery = urlQuery.Encode()
+
+			resp := httptest.NewRecorder()
+			handler := http.HandlerFunc(GraphQlHandler)
+			handler.ServeHTTP(resp, req)
+
+			response := new(createEmployeeResponse)
+			err := json.Unmarshal(resp.Body.Bytes(), response)
+
+			Expect(err).NotTo(HaveOccurred())
+			Expect(response.Errors).ShouldNot(HaveLen(0))
+		})
+	})
+
 	AfterEach(func() {
 		db.Close()
 	})
