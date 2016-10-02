@@ -1,8 +1,6 @@
 package data
 
 import (
-	"time"
-
 	"github.com/SDkie/employee_graphql_sample/db"
 	log "github.com/Sirupsen/logrus"
 )
@@ -15,10 +13,6 @@ type Employee struct {
 	Salary float32     `json:"SALARY" sql:"salary"`
 	DeptNo int         `json:"DEPTNO" sql:"dept_no" gorm:"not null"`
 	Dept   *Department `json:"DEPT" sql:"-"`
-
-	CreatedAt time.Time `sql:"created_at"`
-	UpdatedAt time.Time `sql:"updated_at"`
-	DeletedAt time.Time `sql:"deleted_at"`
 }
 
 // Get Employee using EmployeeNo
