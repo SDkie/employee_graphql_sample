@@ -103,3 +103,13 @@ func UpdateEmployee(params graphql.ResolveParams) (interface{}, error) {
 	}
 	return emp, nil
 }
+
+func DeleteEmployee(params graphql.ResolveParams) (interface{}, error) {
+	empNo := params.Args["EMPNO"].(int)
+	emp, err := data.DeleteEmployeeWithEmpNo(empNo)
+	if err != nil {
+		log.Error(err)
+		return nil, err
+	}
+	return emp, nil
+}

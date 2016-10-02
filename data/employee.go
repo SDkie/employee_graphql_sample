@@ -1,6 +1,8 @@
 package data
 
 import (
+	"time"
+
 	"github.com/SDkie/employee_graphql_sample/db"
 	log "github.com/Sirupsen/logrus"
 )
@@ -13,6 +15,10 @@ type Employee struct {
 	Salary float32     `json:"SALARY" sql:"salary"`
 	DeptNo int         `json:"DEPTNO" sql:"dept_no" gorm:"not null"`
 	Dept   *Department `json:"DEPT" sql:"-"`
+
+	CreatedAt time.Time `sql:"created_at"`
+	UpdatedAt time.Time `sql:"updated_at"`
+	DeletedAt time.Time `sql:"deleted_at"`
 }
 
 // Get Employee using EmployeeNo
@@ -110,5 +116,17 @@ func UpdateEmployee(empNo int, eName string, job string, mgr int, salary float32
 		emp.Dept, err = GetDepartmentByDeptNo(emp.DeptNo)
 	}
 
+	return emp, err
+}
+
+// Delete Employee of given EmployeeNo
+func DeleteEmployeeWithEmpNo(empNo int) (*Employee, error) {
+	// Check if empNo is valid or not
+	emp, err := GetEmployeeByEmpNo(empNo)
+	if err != nil {
+		return nil, err
+	}
+
+	err = db.GetDb().Delete(&Employee{EmpNo: empNo}).Error
 	return emp, err
 }

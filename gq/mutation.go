@@ -56,5 +56,15 @@ var mutation = graphql.NewObject(graphql.ObjectConfig{
 			},
 			Resolve: resolvers.UpdateEmployee,
 		},
+		"deleteEmployee": &graphql.Field{
+			Type:        types.Employee,
+			Description: "Delete an existing Employee record",
+			Args: graphql.FieldConfigArgument{
+				"EMPNO": &graphql.ArgumentConfig{
+					Type: graphql.NewNonNull(graphql.Int),
+				},
+			},
+			Resolve: resolvers.DeleteEmployee,
+		},
 	},
 })
