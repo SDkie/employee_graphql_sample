@@ -3,7 +3,7 @@ package data_test
 import (
 	"os"
 
-	"github.com/SDkie/employee_graphql_sample/data"
+	. "github.com/SDkie/employee_graphql_sample/data"
 	"github.com/SDkie/employee_graphql_sample/db"
 	p "github.com/SDkie/employee_graphql_sample/preferences"
 	log "github.com/Sirupsen/logrus"
@@ -13,8 +13,8 @@ import (
 )
 
 var (
-	dept data.Department
-	emp  data.Employee
+	dept Department
+	emp  Employee
 )
 
 func testingSetup() {
@@ -25,9 +25,9 @@ func testingSetup() {
 	mysqlURL := p.GetMysqlURL()
 	Expect(db.Init(mysqlURL)).NotTo(HaveOccurred())
 	db.GetDb().LogMode(false)
-	Expect(db.GetDb().DropTableIfExists(data.Employee{}).Error).NotTo(HaveOccurred())
-	Expect(db.GetDb().DropTableIfExists(data.Department{}).Error).NotTo(HaveOccurred())
-	data.Init()
+	Expect(db.GetDb().DropTableIfExists(Employee{}).Error).NotTo(HaveOccurred())
+	Expect(db.GetDb().DropTableIfExists(Department{}).Error).NotTo(HaveOccurred())
+	Init()
 
 	dept.Dname = "Software development"
 	dept.Loc = "Pune"
@@ -47,7 +47,7 @@ var _ = Describe("Creating Employee", func() {
 
 	Context("Valid User Creation", func() {
 		It("User Should Create Successfully", func() {
-			newEmp, err := data.CreateEmployee(emp.EName, emp.Job, emp.Mgr, emp.Salary, emp.DeptNo)
+			newEmp, err := CreateEmployee(emp.EName, emp.Job, emp.Mgr, emp.Salary, emp.DeptNo)
 			Expect(err).NotTo(HaveOccurred())
 			Expect(newEmp.EName).Should(Equal(emp.EName))
 			Expect(newEmp.Job).Should(Equal(emp.Job))
@@ -60,7 +60,7 @@ var _ = Describe("Creating Employee", func() {
 
 	Context("User Creation with invalid DeptNo", func() {
 		It("User Creation should fail", func() {
-			_, err := data.CreateEmployee(emp.EName, emp.Job, emp.Mgr, emp.Salary, -1)
+			_, err := CreateEmployee(emp.EName, emp.Job, emp.Mgr, emp.Salary, -1)
 			Expect(err).Should(HaveOccurred())
 		})
 	})
@@ -84,7 +84,7 @@ var _ = Describe("Reading Employee Data", func() {
 
 	Context("Reading User List", func() {
 		It("Should Get All DB Users", func() {
-			emps, err := data.ListOfAllEmployees()
+			emps, err := ListOfAllEmployees()
 			Expect(err).NotTo(HaveOccurred())
 			Expect(emps).Should(HaveLen(2))
 		})
@@ -92,7 +92,7 @@ var _ = Describe("Reading Employee Data", func() {
 
 	Context("Reading Single User", func() {
 		It("Should Get Single DB User", func() {
-			newEmp, err := data.GetEmployeeByEmpNo(emp.EmpNo)
+			newEmp, err := GetEmployeeByEmpNo(emp.EmpNo)
 			Expect(err).NotTo(HaveOccurred())
 			Expect(newEmp.EmpNo).Should(Equal(emp.EmpNo))
 			Expect(newEmp.EName).Should(Equal(emp.EName))
@@ -105,7 +105,7 @@ var _ = Describe("Reading Employee Data", func() {
 
 	Context("Reading User List by DName", func() {
 		It("Should Get All DB Users", func() {
-			emps, err := data.ListOfAllEmployeesByDname(dept.Dname)
+			emps, err := ListOfAllEmployeesByDname(dept.Dname)
 			Expect(err).NotTo(HaveOccurred())
 			Expect(emps).Should(HaveLen(2))
 		})
