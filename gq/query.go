@@ -24,5 +24,16 @@ var query = graphql.NewObject(graphql.ObjectConfig{
 			Description: "Gets a list of all the employees",
 			Resolve:     resolvers.ListOfAllEmployees,
 		},
+		"listOfEmployeesInDept": &graphql.Field{
+			Type:        graphql.NewList(types.Employee),
+			Description: "Gets a list of all the employees in a department",
+			Args: graphql.FieldConfigArgument{
+				"DNAME": &graphql.ArgumentConfig{
+					Type: graphql.NewNonNull(graphql.String),
+				},
+			},
+
+			Resolve: resolvers.ListOfAllEmployeesByDname,
+		},
 	},
 })
