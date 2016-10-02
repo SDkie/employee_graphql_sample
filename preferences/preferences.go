@@ -9,7 +9,7 @@ import (
 
 var (
 	env      = "dev"
-	port     = "3000"
+	port     = "8080"
 	mysqlUrl = "root:pass1234@/employee_graphql_sample"
 )
 
@@ -33,9 +33,9 @@ func Init() {
 		return
 	}
 
-	env := os.Getenv("ENV")
-	if env == "" {
-		env = "dev"
+	temp := os.Getenv("ENV")
+	if temp != "" {
+		env = temp
 	}
 
 	config, err := cfg.GetSection(env)
