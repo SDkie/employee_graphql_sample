@@ -25,9 +25,9 @@ func GetMysqlURL() string {
 	return mysqlUrl
 }
 
-func Init() {
+func Init(iniFile string) {
 	var err error
-	cfg, err := ini.Load("config.ini")
+	cfg, err := ini.Load(iniFile)
 	if err != nil {
 		log.Errorf("Preference Init: Error while loding config.ini file, %s.\n  Using Default values", err)
 		return

@@ -14,7 +14,7 @@ func main() {
 	var err error
 	log.SetLevel(log.DebugLevel)
 
-	p.Init()
+	p.Init("config.ini")
 	if err = db.Init(p.GetMysqlURL()); err != nil {
 		return
 	}
