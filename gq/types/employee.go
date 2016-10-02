@@ -25,4 +25,8 @@ var Employee = graphql.NewObject(graphql.ObjectConfig{
 			Type:        graphql.Float,
 			Description: "Employee Salary",
 		},
+		"DEPT": &graphql.Field{
+			Type:        Department,
+			Description: "Employee Department Details",
+		},
 	}})

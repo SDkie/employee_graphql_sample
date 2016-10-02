@@ -25,6 +25,15 @@ func ListOfAllEmployees(params graphql.ResolveParams) (interface{}, error) {
 		log.Error(err)
 		return nil, err
 	}
+
+	for i, emp := range emps {
+		emps[i].Dept, err = data.GetDepartmentByDeptNo(emp.DeptNo)
+		if err != nil {
+			log.Error(err)
+			return nil, err
+		}
+	}
+
 	return emps, err
 }
 
