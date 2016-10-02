@@ -12,31 +12,38 @@ import (
 	. "github.com/onsi/gomega"
 )
 
+var (
+	dept data.Department
+	emp  data.Employee
+)
+
+func testingSetup() {
+	os.Setenv("ENV", "test")
+	log.SetLevel(log.ErrorLevel)
+
+	p.Init("../config.ini")
+	mysqlURL := p.GetMysqlURL()
+	Expect(db.Init(mysqlURL)).NotTo(HaveOccurred())
+	db.GetDb().LogMode(false)
+	Expect(db.GetDb().DropTableIfExists(data.Employee{}).Error).NotTo(HaveOccurred())
+	Expect(db.GetDb().DropTableIfExists(data.Department{}).Error).NotTo(HaveOccurred())
+	data.Init()
+
+	dept.Dname = "Software development"
+	dept.Loc = "Pune"
+
+	emp.EName = "QWERTY"
+	emp.Job = "Backend Engineer"
+	emp.Mgr = 0
+	emp.Salary = 100.50
+}
+
 var _ = Describe("Creating Employee", func() {
-	var dept data.Department
-	var emp data.Employee
 
 	BeforeEach(func() {
-		os.Setenv("ENV", "test")
-		log.SetLevel(log.ErrorLevel)
-
-		p.Init("../config.ini")
-		mysqlURL := p.GetMysqlURL()
-		Expect(db.Init(mysqlURL)).NotTo(HaveOccurred())
-		db.GetDb().LogMode(false)
-		Expect(db.GetDb().DropTableIfExists(data.Employee{}).Error).NotTo(HaveOccurred())
-		Expect(db.GetDb().DropTableIfExists(data.Department{}).Error).NotTo(HaveOccurred())
-		data.Init()
-
-		dept.Dname = "Software development"
-		dept.Loc = "Pune"
+		testingSetup()
 		Expect(db.GetDb().Create(&dept).Error).NotTo(HaveOccurred())
-
-		emp.EName = "QWERTY"
 		emp.DeptNo = dept.DeptNo
-		emp.Job = "Backend Engineer"
-		emp.Mgr = 0
-		emp.Salary = 100.50
 	})
 
 	Context("Valid User Creation", func() {
