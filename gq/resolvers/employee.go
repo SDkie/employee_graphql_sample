@@ -61,7 +61,10 @@ func CreateEmployee(params graphql.ResolveParams) (interface{}, error) {
 	}
 	temp, ok = params.Args["SALARY"]
 	if ok {
-		salary, _ = temp.(float32)
+		salary64, ok := temp.(float64)
+		if ok {
+			salary = float32(salary64)
+		}
 	}
 
 	emp, err := data.CreateEmployee(eName, job, mgr, salary, deptNo)
@@ -93,7 +96,10 @@ func UpdateEmployee(params graphql.ResolveParams) (interface{}, error) {
 	}
 	temp, ok = params.Args["SALARY"]
 	if ok {
-		salary, _ = temp.(float32)
+		salary64, ok := temp.(float64)
+		if ok {
+			salary = float32(salary64)
+		}
 	}
 
 	emp, err := data.UpdateEmployee(empNo, eName, job, mgr, salary, deptNo)

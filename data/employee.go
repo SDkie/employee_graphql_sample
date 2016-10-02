@@ -65,7 +65,7 @@ func ListOfAllEmployees() ([]Employee, error) {
 
 func CreateEmployee(eName string, job string, mgr int, salary float32, deptNo int) (*Employee, error) {
 	// Check if deptNo is valid or not
-	_, err := GetDepartmentByDeptNo(deptNo)
+	dept, err := GetDepartmentByDeptNo(deptNo)
 	if err != nil {
 		return nil, err
 	}
@@ -76,6 +76,7 @@ func CreateEmployee(eName string, job string, mgr int, salary float32, deptNo in
 	emp.Mgr = mgr
 	emp.Salary = salary
 	emp.DeptNo = deptNo
+	emp.Dept = dept
 	err = db.GetDb().Create(emp).Error
 	return emp, err
 }
