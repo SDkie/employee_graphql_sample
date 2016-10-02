@@ -71,3 +71,35 @@ func CreateEmployee(params graphql.ResolveParams) (interface{}, error) {
 	}
 	return emp, nil
 }
+
+func UpdateEmployee(params graphql.ResolveParams) (interface{}, error) {
+	var eName, job string
+	var salary float32
+	var empNo, mgr, deptNo int
+
+	// Compulsory
+	empNo = params.Args["EMPNO"].(int)
+	eName = params.Args["ENAME"].(string)
+	deptNo = params.Args["DEPTNO"].(int)
+
+	// Optional
+	temp, ok := params.Args["JOB"]
+	if ok {
+		job, _ = temp.(string)
+	}
+	temp, ok = params.Args["MGR"]
+	if ok {
+		mgr, _ = temp.(int)
+	}
+	temp, ok = params.Args["SALARY"]
+	if ok {
+		salary, _ = temp.(float32)
+	}
+
+	emp, err := data.UpdateEmployee(empNo, eName, job, mgr, salary, deptNo)
+	if err != nil {
+		log.Error(err)
+		return nil, err
+	}
+	return emp, nil
+}

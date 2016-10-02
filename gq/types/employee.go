@@ -6,7 +6,7 @@ var Employee = graphql.NewObject(graphql.ObjectConfig{
 	Name: "Employee",
 	Fields: graphql.Fields{
 		"EMPNO": &graphql.Field{
-			Type:        graphql.ID,
+			Type:        graphql.Int,
 			Description: "Employee Number",
 		},
 		"ENAME": &graphql.Field{

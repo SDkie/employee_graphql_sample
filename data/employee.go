@@ -79,3 +79,36 @@ func CreateEmployee(eName string, job string, mgr int, salary float32, deptNo in
 	err = db.GetDb().Create(emp).Error
 	return emp, err
 }
+
+// Update Employee
+func UpdateEmployee(empNo int, eName string, job string, mgr int, salary float32, deptNo int) (*Employee, error) {
+	// Check if deptNo is valid or not
+	_, err := GetDepartmentByDeptNo(deptNo)
+	if err != nil {
+		return nil, err
+	}
+
+	// Check if empNo is valid or not
+	emp, err := GetEmployeeByEmpNo(empNo)
+	if err != nil {
+		return nil, err
+	}
+
+	oldDeptNo := emp.DeptNo
+	emp.EName = eName
+	emp.Job = job
+	emp.Mgr = mgr
+	emp.Salary = salary
+	emp.DeptNo = deptNo
+	err = db.GetDb().Save(emp).Error
+	if err != nil {
+		return nil, err
+	}
+
+	// If DeptNo is changed then only update emp.Dept
+	if oldDeptNo != emp.DeptNo {
+		emp.Dept, err = GetDepartmentByDeptNo(emp.DeptNo)
+	}
+
+	return emp, err
+}
