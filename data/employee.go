@@ -30,3 +30,20 @@ func ListOfAllEmployees() ([]Employee, error) {
 	err := db.GetDb().Find(&emps).Error
 	return *emps, err
 }
+
+func CreateEmployee(eName string, job string, mgr int, salary float32, deptNo int) (*Employee, error) {
+	// Check if deptNo is valid or not
+	_, err := GetDepartmentByDeptNo(deptNo)
+	if err != nil {
+		return nil, err
+	}
+
+	emp := new(Employee)
+	emp.EName = eName
+	emp.Job = job
+	emp.Mgr = mgr
+	emp.Salary = salary
+	emp.DeptNo = deptNo
+	err = db.GetDb().Create(emp).Error
+	return emp, err
+}

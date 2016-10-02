@@ -27,3 +27,34 @@ func ListOfAllEmployees(params graphql.ResolveParams) (interface{}, error) {
 	}
 	return emps, err
 }
+
+func CreateEmployee(params graphql.ResolveParams) (interface{}, error) {
+	var eName, job string
+	var salary float32
+	var mgr, deptNo int
+
+	// Compulsory
+	eName = params.Args["ENAME"].(string)
+	deptNo = params.Args["DEPTNO"].(int)
+
+	// Optional
+	temp, ok := params.Args["JOB"]
+	if ok {
+		job, _ = temp.(string)
+	}
+	temp, ok = params.Args["MGR"]
+	if ok {
+		mgr, _ = temp.(int)
+	}
+	temp, ok = params.Args["SALARY"]
+	if ok {
+		salary, _ = temp.(float32)
+	}
+
+	emp, err := data.CreateEmployee(eName, job, mgr, salary, deptNo)
+	if err != nil {
+		log.Error(err)
+		return nil, err
+	}
+	return emp, nil
+}

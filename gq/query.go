@@ -14,7 +14,7 @@ var query = graphql.NewObject(graphql.ObjectConfig{
 			Description: "Gets a Employee record based on the EMPNO",
 			Args: graphql.FieldConfigArgument{
 				"EMPNO": &graphql.ArgumentConfig{
-					Type: graphql.Int,
+					Type: graphql.NewNonNull(graphql.Int),
 				},
 			},
 			Resolve: resolvers.GetEmployee,

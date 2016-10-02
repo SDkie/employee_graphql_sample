@@ -6,7 +6,7 @@ var Department = graphql.NewObject(graphql.ObjectConfig{
 	Name: "Department",
 	Fields: graphql.Fields{
 		"DEPTNO": &graphql.Field{
-			Type: graphql.Int,
+			Type: graphql.ID,
 		},
 		"DNAME": &graphql.Field{
 			Type: graphql.String,
