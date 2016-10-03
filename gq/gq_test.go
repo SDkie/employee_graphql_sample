@@ -34,6 +34,7 @@ func setup() {
 	dept.Dname = "Software development"
 	dept.Loc = "Pune"
 
+	emp.EmpNo = 0
 	emp.EName = "QWERTY"
 	emp.Job = "Backend Engineer"
 	emp.Mgr = 0
