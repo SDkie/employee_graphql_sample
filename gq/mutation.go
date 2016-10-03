@@ -39,7 +39,7 @@ var mutation = graphql.NewObject(graphql.ObjectConfig{
 					Type: graphql.NewNonNull(graphql.Int),
 				},
 				"ENAME": &graphql.ArgumentConfig{
-					Type: graphql.NewNonNull(graphql.String),
+					Type: graphql.String,
 				},
 				"JOB": &graphql.ArgumentConfig{
 					Type: graphql.String,
@@ -51,7 +51,7 @@ var mutation = graphql.NewObject(graphql.ObjectConfig{
 					Type: graphql.Float,
 				},
 				"DEPTNO": &graphql.ArgumentConfig{
-					Type: graphql.NewNonNull(graphql.Int),
+					Type: graphql.Int,
 				},
 			},
 			Resolve: resolvers.UpdateEmployee,
