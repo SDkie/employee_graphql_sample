@@ -24,6 +24,9 @@ var _ = Describe("Creating Employee", func() {
 			Expect(newEmp.Mgr).Should(Equal(emp.Mgr))
 			Expect(newEmp.Salary).Should(Equal(emp.Salary))
 			Expect(newEmp.DeptNo).Should(Equal(emp.DeptNo))
+			Expect(newEmp.Dept.DeptNo).Should(Equal(dept.DeptNo))
+			Expect(newEmp.Dept.Dname).Should(Equal(dept.Dname))
+			Expect(newEmp.Dept.Loc).Should(Equal(dept.Loc))
 		})
 
 	})
@@ -31,6 +34,46 @@ var _ = Describe("Creating Employee", func() {
 	Context("User Creation with invalid DeptNo", func() {
 		It("User Creation should fail", func() {
 			_, err := CreateEmployee(emp.EName, emp.Job, emp.Mgr, emp.Salary, -1)
+			Expect(err).Should(HaveOccurred())
+		})
+	})
+
+	AfterEach(func() {
+		db.Close()
+	})
+})
+
+var _ = Describe("Updating Employee", func() {
+	BeforeEach(func() {
+		setup()
+		Expect(db.GetDb().Create(&dept).Error).NotTo(HaveOccurred())
+		emp.DeptNo = dept.DeptNo
+		Expect(db.GetDb().Create(&emp).Error).NotTo(HaveOccurred())
+	})
+
+	Context("Updating Employee", func() {
+		It("Should Successfully Update", func() {
+			// New Data
+			emp.EName = "New Name"
+			emp.Job = "New Job"
+			newEmp, err := UpdateEmployee(emp.EmpNo, emp.EName, emp.Job, emp.Mgr, emp.Salary, emp.DeptNo)
+			Expect(err).NotTo(HaveOccurred())
+			Expect(newEmp.EmpNo).Should(Equal(emp.EmpNo))
+			Expect(newEmp.EName).Should(Equal(emp.EName))
+			Expect(newEmp.Job).Should(Equal(emp.Job))
+			Expect(newEmp.Mgr).Should(Equal(emp.Mgr))
+			Expect(newEmp.Salary).Should(Equal(emp.Salary))
+			Expect(newEmp.DeptNo).Should(Equal(emp.DeptNo))
+			Expect(newEmp.Dept.DeptNo).Should(Equal(dept.DeptNo))
+			Expect(newEmp.Dept.Dname).Should(Equal(dept.Dname))
+			Expect(newEmp.Dept.Loc).Should(Equal(dept.Loc))
+		})
+
+	})
+
+	Context("User Updation with invalid EmpNo", func() {
+		It("should Fail User Updation", func() {
+			_, err := UpdateEmployee(-1, emp.EName, emp.Job, emp.Mgr, emp.Salary, emp.DeptNo)
 			Expect(err).Should(HaveOccurred())
 		})
 	})
@@ -70,6 +113,9 @@ var _ = Describe("Reading Employee Data", func() {
 			Expect(newEmp.Mgr).Should(Equal(emp.Mgr))
 			Expect(newEmp.Salary).Should(Equal(emp.Salary))
 			Expect(newEmp.DeptNo).Should(Equal(emp.DeptNo))
+			Expect(newEmp.Dept.DeptNo).Should(Equal(dept.DeptNo))
+			Expect(newEmp.Dept.Dname).Should(Equal(dept.Dname))
+			Expect(newEmp.Dept.Loc).Should(Equal(dept.Loc))
 		})
 	})
 
