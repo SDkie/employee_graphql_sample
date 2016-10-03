@@ -248,8 +248,6 @@ var _ = Describe("updateEmployee", func() {
 			Expect(empDb.Dept.Dname).Should(Equal(dept.Dname))
 			Expect(empDb.Dept.DeptNo).Should(Equal(dept.DeptNo))
 			Expect(empDb.Dept.Loc).Should(Equal(dept.Loc))
-
-			fmt.Println(resp.Body)
 		})
 	})
 

@@ -41,8 +41,8 @@ func ListOfAllEmployeesByDname(dname string) ([]Employee, error) {
 		return nil, err
 	}
 
-	for _, emp := range emps {
-		emp.Dept = dept
+	for i, _ := range emps {
+		emps[i].Dept = dept
 	}
 
 	return emps, nil

@@ -175,3 +175,86 @@ var _ = Describe("listOfAllEmployees Graph Query", func() {
 		db.Close()
 	})
 })
+
+var _ = Describe("listOfEmployeesInDept Graph Query", func() {
+	type listOfEmployeesInDeptResponse struct {
+		Data struct {
+			Employees []data.Employee `json:"listOfEmployeesInDept"`
+		} `json:"data"`
+
+		Errors []gqError `json:"errors"`
+	}
+
+	BeforeEach(func() {
+		setup()
+		Expect(db.GetDb().Create(&dept).Error).NotTo(HaveOccurred())
+		emp.DeptNo = dept.DeptNo
+		// Adding multiple users
+		Expect(db.GetDb().Create(&emp).Error).NotTo(HaveOccurred())
+		emp.EmpNo = 0
+		Expect(db.GetDb().Create(&emp).Error).NotTo(HaveOccurred())
+	})
+
+	Context("Sending valid graphql query", func() {
+
+		It("Should get list of all users of given department", func() {
+			query := `
+		query {
+			listOfEmployeesInDept(DNAME:"%s"){
+				EMPNO
+				ENAME,
+				JOB,
+				MGR,
+				SALARY,
+				DEPT {
+					DEPTNO,
+					DNAME,
+					LOC
+				}
+			}
+		}`
+
+			query = fmt.Sprintf(query, dept.Dname)
+			resp := sendRequest(query)
+			response := new(listOfEmployeesInDeptResponse)
+			Expect(json.Unmarshal(resp.Body.Bytes(), response)).ShouldNot(HaveOccurred())
+			Expect(response.Errors).Should(HaveLen(0))
+			Expect(response.Data.Employees).Should(HaveLen(2))
+
+			for i, dbEmp := range response.Data.Employees {
+				Expect(dbEmp.EmpNo).Should(Equal(i + 1))
+				Expect(dbEmp.EName).Should(Equal(emp.EName))
+				Expect(dbEmp.Job).Should(Equal(emp.Job))
+				Expect(dbEmp.Mgr).Should(Equal(emp.Mgr))
+				Expect(dbEmp.Salary).Should(Equal(emp.Salary))
+				Expect(dbEmp.Dept.Dname).Should(Equal(dept.Dname))
+				Expect(dbEmp.Dept.DeptNo).Should(Equal(dept.DeptNo))
+				Expect(dbEmp.Dept.Loc).Should(Equal(dept.Loc))
+			}
+		})
+	})
+
+	Context("Not sending valid DNAME", func() {
+		It("Should give error", func() {
+			query := `
+		query {
+			listOfEmployeesInDept(DNAME:"TEMP"){
+				EMPNO
+				ENAME,
+				JOB,
+				MGR,
+				SALARY
+			}
+		}`
+
+			resp := sendRequest(query)
+			response := new(listOfEmployeesInDeptResponse)
+			Expect(json.Unmarshal(resp.Body.Bytes(), response)).ShouldNot(HaveOccurred())
+			Expect(response.Errors).ShouldNot(HaveLen(0))
+		})
+	})
+
+	AfterEach(func() {
+		db.Close()
+	})
+})
