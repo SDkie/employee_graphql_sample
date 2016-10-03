@@ -8,7 +8,6 @@ import (
 
 	"net/http"
 	"net/http/httptest"
-	"net/url"
 	"os"
 
 	"github.com/SDkie/employee_graphql_sample/data"
@@ -20,14 +19,11 @@ import (
 )
 
 var (
-	dept     data.Department
-	emp      data.Employee
-	req      *http.Request
-	urlQuery url.Values
+	dept data.Department
+	emp  data.Employee
 )
 
 func testingSetup() {
-	var err error
 	os.Setenv("ENV", "test")
 	log.SetLevel(log.ErrorLevel)
 
@@ -47,9 +43,20 @@ func testingSetup() {
 	emp.Mgr = 0
 	emp.Salary = 100.50
 
-	req, err = http.NewRequest("GET", "/graphql", nil)
+}
+
+func sendRequest(query string) *httptest.ResponseRecorder {
+	req, err := http.NewRequest("GET", "/graphql", nil)
 	Expect(err).NotTo(HaveOccurred())
-	urlQuery = req.URL.Query()
+	urlQuery := req.URL.Query()
+
+	urlQuery.Set("query", query)
+	req.URL.RawQuery = urlQuery.Encode()
+
+	resp := httptest.NewRecorder()
+	handler := http.HandlerFunc(GraphQlHandler)
+	handler.ServeHTTP(resp, req)
+	return resp
 }
 
 type gqLocation struct {
@@ -97,13 +104,8 @@ var _ = Describe("createEmployee Graph Query", func() {
 		}`
 
 			query = fmt.Sprintf(query, emp.EName, emp.Job, emp.Mgr, emp.Salary, dept.DeptNo)
-			urlQuery.Set("query", query)
-			req.URL.RawQuery = urlQuery.Encode()
 
-			resp := httptest.NewRecorder()
-			handler := http.HandlerFunc(GraphQlHandler)
-			handler.ServeHTTP(resp, req)
-
+			resp := sendRequest(query)
 			response := new(createEmployeeResponse)
 			err := json.Unmarshal(resp.Body.Bytes(), response)
 
@@ -138,12 +140,7 @@ var _ = Describe("createEmployee Graph Query", func() {
 		}`
 
 			query = fmt.Sprintf(query, emp.EName, emp.Job, emp.Mgr, emp.Salary, -1)
-			urlQuery.Set("query", query)
-			req.URL.RawQuery = urlQuery.Encode()
-
-			resp := httptest.NewRecorder()
-			handler := http.HandlerFunc(GraphQlHandler)
-			handler.ServeHTTP(resp, req)
+			resp := sendRequest(query)
 
 			response := new(createEmployeeResponse)
 			err := json.Unmarshal(resp.Body.Bytes(), response)
