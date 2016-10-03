@@ -1,46 +1,16 @@
 package data_test
 
 import (
-	"os"
-
 	. "github.com/SDkie/employee_graphql_sample/data"
 	"github.com/SDkie/employee_graphql_sample/db"
-	p "github.com/SDkie/employee_graphql_sample/preferences"
-	log "github.com/Sirupsen/logrus"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
 
-var (
-	dept Department
-	emp  Employee
-)
-
-func testingSetup() {
-	os.Setenv("ENV", "test")
-	log.SetLevel(log.ErrorLevel)
-
-	p.Init("../config.ini")
-	mysqlURL := p.GetMysqlURL()
-	Expect(db.Init(mysqlURL)).NotTo(HaveOccurred())
-	db.GetDb().LogMode(false)
-	Expect(db.GetDb().DropTableIfExists(Employee{}).Error).NotTo(HaveOccurred())
-	Expect(db.GetDb().DropTableIfExists(Department{}).Error).NotTo(HaveOccurred())
-	Init()
-
-	dept.Dname = "Software development"
-	dept.Loc = "Pune"
-
-	emp.EName = "QWERTY"
-	emp.Job = "Backend Engineer"
-	emp.Mgr = 0
-	emp.Salary = 100.50
-}
-
 var _ = Describe("Creating Employee", func() {
 	BeforeEach(func() {
-		testingSetup()
+		setup()
 		Expect(db.GetDb().Create(&dept).Error).NotTo(HaveOccurred())
 		emp.DeptNo = dept.DeptNo
 	})
@@ -72,7 +42,7 @@ var _ = Describe("Creating Employee", func() {
 
 var _ = Describe("Reading Employee Data", func() {
 	BeforeEach(func() {
-		testingSetup()
+		setup()
 		Expect(db.GetDb().Create(&dept).Error).NotTo(HaveOccurred())
 		emp.DeptNo = dept.DeptNo
 		Expect(db.GetDb().Create(&emp).Error).NotTo(HaveOccurred())
