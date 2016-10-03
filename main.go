@@ -23,7 +23,8 @@ func main() {
 	data.Init()
 
 	http.HandleFunc("/graphql", gq.GraphQlHandler)
+	log.Infoln("Starting server at", p.GetPort())
 	if err = http.ListenAndServe(p.GetPort(), nil); err != nil {
-		log.Errorf("Error while starting webserver %s", err)
+		log.Errorf("Error while starting webserver %s\n", err)
 	}
 }

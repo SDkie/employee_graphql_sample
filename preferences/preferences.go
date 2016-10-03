@@ -29,7 +29,7 @@ func Init(iniFile string) {
 	var err error
 	cfg, err := ini.Load(iniFile)
 	if err != nil {
-		log.Errorf("Preference Init: Error while loding config.ini file, %s.\n  Using Default values", err)
+		log.Errorf("Preference Init: Error while loding config.ini file, %s.\nUsing Default values\n", err)
 		return
 	}
 
@@ -46,5 +46,5 @@ func Init(iniFile string) {
 	port = config.Key("PORT").String()
 	mysqlUrl = config.Key("MYSQL_URL").String()
 
-	log.Info("Preference Init: DONE")
+	log.Infoln("Preference Init: DONE")
 }
