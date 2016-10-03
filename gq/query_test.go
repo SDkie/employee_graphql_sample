@@ -66,7 +66,7 @@ var _ = Describe("getEmployee Graph Query", func() {
 
 	Context("Sending Invalid EMPNO in query", func() {
 
-		It("Not sending EMPNO in request", func() {
+		It("Should fail with Not Found error", func() {
 			query := `
 		query {
 			getEmployee{
@@ -116,7 +116,7 @@ var _ = Describe("listOfAllEmployees Graph Query", func() {
 
 	Context("Sending valid graphql query", func() {
 
-		It("We should get list of all users", func() {
+		It("Should get list of all users", func() {
 			query := `
 		query {
 			listOfAllEmployees{
@@ -151,7 +151,7 @@ var _ = Describe("listOfAllEmployees Graph Query", func() {
 	})
 
 	Context("Not sending subsection of DEPT", func() {
-		It("We should get error", func() {
+		It("Should get error from graphql", func() {
 			query := `
 		query {
 			listOfAllEmployees{
