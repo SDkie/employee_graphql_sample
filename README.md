@@ -12,4 +12,5 @@
 * `./employee_graphql_sample`
 
 ## Run Test cases
-* go test ./... -v
+* go test ./data
+* go test ./gq
