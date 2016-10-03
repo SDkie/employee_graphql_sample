@@ -131,3 +131,43 @@ var _ = Describe("Reading Employee Data", func() {
 		db.Close()
 	})
 })
+
+var _ = Describe("Delete Employee", func() {
+	BeforeEach(func() {
+		setup()
+		Expect(db.GetDb().Create(&dept).Error).NotTo(HaveOccurred())
+		emp.DeptNo = dept.DeptNo
+	})
+
+	Context("Deleting Employee", func() {
+		It("Should Delete Employee Successfully", func() {
+			Expect(db.GetDb().Create(&emp).Error).NotTo(HaveOccurred())
+
+			newEmp, err := DeleteEmployeeWithEmpNo(emp.EmpNo)
+			Expect(err).NotTo(HaveOccurred())
+			Expect(newEmp.EmpNo).Should(Equal(emp.EmpNo))
+			Expect(newEmp.EName).Should(Equal(emp.EName))
+			Expect(newEmp.Job).Should(Equal(emp.Job))
+			Expect(newEmp.Mgr).Should(Equal(emp.Mgr))
+			Expect(newEmp.Salary).Should(Equal(emp.Salary))
+			Expect(newEmp.DeptNo).Should(Equal(emp.DeptNo))
+			Expect(newEmp.Dept.DeptNo).Should(Equal(dept.DeptNo))
+			Expect(newEmp.Dept.Dname).Should(Equal(dept.Dname))
+			Expect(newEmp.Dept.Loc).Should(Equal(dept.Loc))
+
+			checkEmp := new(Employee)
+			Expect(db.GetDb().Where(&Employee{EmpNo: emp.EmpNo}).First(checkEmp).Error).Should(HaveOccurred())
+		})
+	})
+
+	Context("Deleting Invalid EmpNo", func() {
+		It("Should Fail", func() {
+			_, err := DeleteEmployeeWithEmpNo(-1)
+			Expect(err).Should(HaveOccurred())
+		})
+	})
+
+	AfterEach(func() {
+		db.Close()
+	})
+})
