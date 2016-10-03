@@ -1,8 +1,9 @@
 package data
 
 import (
+	"errors"
+
 	"github.com/SDkie/employee_graphql_sample/db"
-	log "github.com/Sirupsen/logrus"
 )
 
 type Employee struct {
@@ -44,29 +45,32 @@ func ListOfAllEmployeesByDname(dname string) ([]Employee, error) {
 		emp.Dept = dept
 	}
 
-	return emps, err
+	return emps, nil
 }
 
 // Get List of All Employees
 func ListOfAllEmployees() ([]Employee, error) {
 	emps := []Employee{}
 	err := db.GetDb().Find(&emps).Error
+	if err != nil {
+		return nil, err
+	}
 
 	for i, emp := range emps {
 		emps[i].Dept, err = GetDepartmentByDeptNo(emp.DeptNo)
 		if err != nil {
-			log.Error(err)
 			return nil, err
 		}
 	}
 
-	return emps, err
+	return emps, nil
 }
 
 func CreateEmployee(eName string, job string, mgr int, salary float32, deptNo int) (*Employee, error) {
 	// Check if deptNo is valid or not
 	dept, err := GetDepartmentByDeptNo(deptNo)
 	if err != nil {
+		err = errors.New("Invalid DeptNo")
 		return nil, err
 	}
 
@@ -86,12 +90,14 @@ func UpdateEmployee(empNo int, eName string, job string, mgr int, salary float32
 	// Check if deptNo is valid or not
 	_, err := GetDepartmentByDeptNo(deptNo)
 	if err != nil {
+		err = errors.New("Invalid DeptNo")
 		return nil, err
 	}
 
 	// Check if empNo is valid or not
 	emp, err := GetEmployeeByEmpNo(empNo)
 	if err != nil {
+		err = errors.New("Invalid EmpNo")
 		return nil, err
 	}
 
@@ -119,6 +125,7 @@ func DeleteEmployeeWithEmpNo(empNo int) (*Employee, error) {
 	// Check if empNo is valid or not
 	emp, err := GetEmployeeByEmpNo(empNo)
 	if err != nil {
+		err = errors.New("Invalid EmpNo")
 		return nil, err
 	}
 
